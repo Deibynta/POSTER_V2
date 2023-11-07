@@ -26,7 +26,13 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 now = datetime.datetime.now()
 time_str = now.strftime("[%m-%d]-[%H-%M]-")
-device = "mps" if torch.backends.mps.is_available() else "cpu"
+if torch.backends.mps.is_available():
+    device = "mps"
+elif torch.cuda.is_available():
+    device = 'cuda'
+else:
+    device = 'cpu'
+
 print(f"Using device: {device}")
 
 parser = argparse.ArgumentParser()
@@ -64,7 +70,7 @@ parser.add_argument(
     metavar="N",
     help="manual epoch number (useful on restarts)",
 )
-parser.add_argument("-b", "--batch-size", default=144, type=int, metavar="N")
+parser.add_argument("-b", "--batch-size", default=1, type=int, metavar="N")
 parser.add_argument(
     "--optimizer", type=str, default="adam", help="Optimizer, adam or sgd."
 )
