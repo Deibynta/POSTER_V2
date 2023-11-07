@@ -161,6 +161,5 @@ cython_debug/
 
 #Datasets
 raf-db/
-models/pretrain/
 log/
 raf-db-model_best.pth
