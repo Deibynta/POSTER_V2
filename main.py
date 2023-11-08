@@ -107,7 +107,7 @@ def main():
     print("Training time: " + now.strftime("%m-%d %H:%M"))
 
     # create model
-    model = pyramid_trans_expr2(img_size=128, num_classes=7)
+    model = pyramid_trans_expr2(img_size=224, num_classes=7)
 
     model = torch.nn.DataParallel(model)
     model = model.to(device)
@@ -165,7 +165,7 @@ def main():
                 traindir,
                 transforms.Compose(
                     [
-                        transforms.Resize((128, 128)),
+                        transforms.Resize((224, 224)),
                         transforms.RandomHorizontalFlip(),
                         transforms.ToTensor(),
                         transforms.Normalize(
@@ -180,7 +180,7 @@ def main():
                 traindir,
                 transforms.Compose(
                     [
-                        transforms.Resize((128, 128)),
+                        transforms.Resize((224, 224)),
                         transforms.RandomHorizontalFlip(),
                         transforms.ToTensor(),
                         transforms.Normalize(
@@ -214,7 +214,7 @@ def main():
         valdir,
         transforms.Compose(
             [
-                transforms.Resize((128, 128)),
+                transforms.Resize((224, 224)),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
@@ -428,7 +428,7 @@ def prediction(model, args):
     with torch.no_grad():
         transform = transforms.Compose(
             [
-                transforms.Resize((128, 128)),
+                transforms.Resize((224, 224)),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
