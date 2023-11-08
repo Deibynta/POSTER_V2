@@ -457,8 +457,8 @@ def prediction(model, args):
             ]
         )
         test_image = Image.open(args.image)
-        test_image = test_image.to(device)
         image_tensor = transform(test_image).unsqueeze(0)
+        image_tensor = image_tensor.to(device)
 
         model.eval()
         img_pred = model(image_tensor)
