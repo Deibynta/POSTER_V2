@@ -71,7 +71,7 @@ parser.add_argument(
     metavar="N",
     help="manual epoch number (useful on restarts)",
 )
-parser.add_argument("-b", "--batch-size", default=1, type=int, metavar="N")
+parser.add_argument("-b", "--batch-size", default=2, type=int, metavar="N")
 parser.add_argument(
     "--optimizer", type=str, default="adam", help="Optimizer, adam or sgd."
 )
@@ -98,7 +98,7 @@ parser.add_argument("--gpu", type=str, default="0")
 parser.add_argument(
     "-i", "--image", type=str, help="upload a single image to test the prediction"
 )
-parser.add_argument("-t", "--test", type=str, default="./checkpoint/" + time_str + "model_best.pth", help="test model on single image")
+parser.add_argument("-t", "--test", type=str, help="test model on single image")
 args = parser.parse_args()
 
 
