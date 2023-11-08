@@ -2,6 +2,7 @@ import shutil
 import warnings
 from sklearn import metrics
 from sklearn.metrics import confusion_matrix
+from PIL import Image
 
 warnings.filterwarnings("ignore")
 import torch.utils.data as data
@@ -29,9 +30,9 @@ time_str = now.strftime("[%m-%d]-[%H-%M]-")
 if torch.backends.mps.is_available():
     device = "mps"
 elif torch.cuda.is_available():
-    device = 'cuda'
+    device = "cuda"
 else:
-    device = 'cpu'
+    device = "cpu"
 
 print(f"Using device: {device}")
 
@@ -93,6 +94,10 @@ parser.add_argument(
 )
 parser.add_argument("--beta", type=float, default=0.6)
 parser.add_argument("--gpu", type=str, default="0")
+
+parser.add_argument(
+    "-i", "--image", type=str, help="upload a single image to test the prediction"
+)
 args = parser.parse_args()
 
 
@@ -311,13 +316,8 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     model.train()
 
     for i, (images, target) in enumerate(train_loader):
-        # print(images.shape)
         images = images.to(device)
-        # images = images.type(torch.float)
         target = target.to(device)
-        # target = target.type(torch.float)
-        # images = images.to(device=mps0).type(torch.FloatTensor)
-        # target = target.to(device=mps0).type(torch.FloatTensor)
 
         # compute output
         output = model(images)
@@ -335,8 +335,6 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         optimizer.first_step(zero_grad=True)
         images = images.to(device)
         target = target.to(device)
-        # images = images.to(device=mps0).type(torch.FloatTensor)
-        # target = target.to(device=mps0).type(torch.FloatTensor)
 
         # compute output
         output = model(images)
@@ -424,6 +422,35 @@ def save_checkpoint(state, is_best, args):
     if is_best:
         best_state = state.pop("optimizer")
         torch.save(best_state, args.best_checkpoint_path)
+
+
+def prediction(model, args):
+    transform = transforms.Compose(
+        [
+            transforms.Resize((128, 128)),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
+        ]
+    )
+    test_image = Image.open(args.image)
+    image_tensor = transform(test_image).unsqueeze(0)
+
+    model.eval()
+    img_pred = model(image_tensor)
+    topk = (3,)
+    with torch.no_grad():
+        maxk = max(topk)
+        # batch_size = target.size(0)
+        _, pred = img_pred.topk(maxk, 1, True, True)
+        pred = pred.t()
+
+    img_pred = pred
+    img_pred = img_pred.squeeze().cpu().numpy()
+    im_pre_label = np.array(img_pred)
+    y_pred = im_pre_label.flatten()
+    print(f"The predicted label is {y_pred} with an accuracy of {pred}")
 
 
 class AverageMeter(object):
