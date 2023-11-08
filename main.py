@@ -98,7 +98,7 @@ parser.add_argument("--gpu", type=str, default="0")
 parser.add_argument(
     "-i", "--image", type=str, help="upload a single image to test the prediction"
 )
-parser.add_argument("-t", "--test", type=str, default="./checkpoint/" + time_str + "model.pth", help="test model on single image")
+parser.add_argument("-t", "--test", type=str, default="./checkpoint/" + time_str + "model_best.pth", help="test model on single image")
 args = parser.parse_args()
 
 
