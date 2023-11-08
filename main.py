@@ -425,32 +425,33 @@ def save_checkpoint(state, is_best, args):
 
 
 def prediction(model, args):
-    transform = transforms.Compose(
-        [
-            transforms.Resize((128, 128)),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-            transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
-        ]
-    )
-    test_image = Image.open(args.image)
-    image_tensor = transform(test_image).unsqueeze(0)
-
-    model.eval()
-    img_pred = model(image_tensor)
-    topk = (3,)
     with torch.no_grad():
-        maxk = max(topk)
-        # batch_size = target.size(0)
-        _, pred = img_pred.topk(maxk, 1, True, True)
-        pred = pred.t()
+        transform = transforms.Compose(
+            [
+                transforms.Resize((128, 128)),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
+            ]
+        )
+        test_image = Image.open(args.image)
+        image_tensor = transform(test_image).unsqueeze(0)
 
-    img_pred = pred
-    img_pred = img_pred.squeeze().cpu().numpy()
-    im_pre_label = np.array(img_pred)
-    y_pred = im_pre_label.flatten()
-    print(f"The predicted label is {y_pred} with an accuracy of {pred}")
+        model.eval()
+        img_pred = model(image_tensor)
+        topk = (3,)
+        with torch.no_grad():
+            maxk = max(topk)
+            # batch_size = target.size(0)
+            _, pred = img_pred.topk(maxk, 1, True, True)
+            pred = pred.t()
+
+        img_pred = pred
+        img_pred = img_pred.squeeze().cpu().numpy()
+        im_pre_label = np.array(img_pred)
+        y_pred = im_pre_label.flatten()
+        print(f"The predicted label is {y_pred} with an accuracy of {pred}")
 
 
 class AverageMeter(object):
