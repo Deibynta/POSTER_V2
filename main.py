@@ -37,7 +37,7 @@ else:
 print(f"Using device: {device}")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data", type=str, default=r"/home/Dataset/RAF")
+parser.add_argument("--data", type=str, default=r"raf-db/DATASET")
 parser.add_argument(
     "--data_type",
     default="RAF-DB",
@@ -98,7 +98,7 @@ parser.add_argument("--gpu", type=str, default="0")
 parser.add_argument(
     "-i", "--image", type=str, help="upload a single image to test the prediction"
 )
-parser.add_argument("-t", "--test", type=str, help="test model on single image")
+parser.add_argument("-t", "--test", type=str, default="./checkpoint/" + time_str + "model.pth", help="test model on single image")
 args = parser.parse_args()
 
 
