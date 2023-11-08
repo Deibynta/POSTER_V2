@@ -98,6 +98,7 @@ parser.add_argument("--gpu", type=str, default="0")
 parser.add_argument(
     "-i", "--image", type=str, help="upload a single image to test the prediction"
 )
+parser.add_argument("-t", "--test", type=str, help="test model on single image")
 args = parser.parse_args()
 
 
@@ -249,6 +250,24 @@ def main():
         validate(val_loader, model, criterion, args)
         return
 
+    if args.test is not None:
+        if os.path.isfile(args.test):
+            print("=> loading checkpoint '{}'".format(args.test))
+            checkpoint = torch.load(args.test, map_location=device)
+            best_acc = checkpoint["best_acc"]
+            best_acc = best_acc.to()
+            print(f"best_acc:{best_acc}")
+            model.load_state_dict(checkpoint["state_dict"])
+            print(
+                "=> loaded checkpoint '{}' (epoch {})".format(
+                    args.test, checkpoint["epoch"]
+                )
+            )
+        else:
+            print("=> no checkpoint found at '{}'".format(args.test))
+        prediction(model, args)
+
+        return
     matrix = None
 
     for epoch in range(args.start_epoch, args.epochs):
@@ -431,11 +450,14 @@ def prediction(model, args):
                 transforms.Resize((224, 224)),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
                 transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
             ]
         )
         test_image = Image.open(args.image)
+        test_image = test_image.to(device)
         image_tensor = transform(test_image).unsqueeze(0)
 
         model.eval()
@@ -451,7 +473,7 @@ def prediction(model, args):
         img_pred = img_pred.squeeze().cpu().numpy()
         im_pre_label = np.array(img_pred)
         y_pred = im_pre_label.flatten()
-        print(f"The predicted label is {y_pred} with an accuracy of {pred}")
+        print(f"The predicted labels are {y_pred}")
 
 
 class AverageMeter(object):
