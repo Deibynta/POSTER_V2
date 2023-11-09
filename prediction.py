@@ -18,7 +18,9 @@ model = torch.nn.DataParallel(model)
 model = model.to(device)
 
 model_path = "raf-db-model_best.pth"
-image_path = "/Users/futuregadgetlab/Downloads/1000_F_246149573_1dbnEopMZjSflWG4ZvojXhVVV8cTewTW.jpg"
+image_arr = [
+    "/Users/futuregadgetlab/Downloads/1000_F_246149573_1dbnEopMZjSflWG4ZvojXhVVV8cTewTW.jpg"
+]
 
 
 def main():
@@ -37,11 +39,13 @@ def main():
             )
         else:
             print("=> no checkpoint found at '{}'".format(model_path))
-        predict(model, image_path=image_path)
+        predict(model, image_path=image_arr)
         return
 
 
 def predict(model, image_path):
+    from face_detection import face_detection
+
     with torch.no_grad():
         transform = transforms.Compose(
             [
@@ -54,39 +58,40 @@ def predict(model, image_path):
                 transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
             ]
         )
-        from face_detection import face_detection
-        face = face_detection(image_path)
-        image_tensor = transform(face).unsqueeze(0)
-        image_tensor = image_tensor.to(device)
 
-        model.eval()
-        img_pred = model(image_tensor)
-        topk = (3,)
-        with torch.no_grad():
-            maxk = max(topk)
-            # batch_size = target.size(0)
-            _, pred = img_pred.topk(maxk, 1, True, True)
-            pred = pred.t()
+        for image_file in image_arr:
+            face = face_detection(image_file)
+            image_tensor = transform(face).unsqueeze(0)
+            image_tensor = image_tensor.to(device)
 
-        img_pred = pred
-        img_pred = img_pred.squeeze().cpu().numpy()
-        im_pre_label = np.array(img_pred)
-        y_pred = im_pre_label.flatten()
-        emotions = {
-            0: 'Surprise',
-            1: 'Fear',
-            2: 'Disgust',
-            3:'Happy',
-            4:'Sad',
-            5:'Angry',
-            6:'Neutral',
-        }
-        labels = []
-        for i in y_pred:
-            labels.append(emotions.get(i))
+            model.eval()
+            img_pred = model(image_tensor)
+            topk = (3,)
+            with torch.no_grad():
+                maxk = max(topk)
+                # batch_size = target.size(0)
+                _, pred = img_pred.topk(maxk, 1, True, True)
+                pred = pred.t()
 
-        print(f"The predicted labels are {y_pred} and the label is {labels}")
+            img_pred = pred
+            img_pred = img_pred.squeeze().cpu().numpy()
+            im_pre_label = np.array(img_pred)
+            y_pred = im_pre_label.flatten()
+            emotions = {
+                0: "Surprise",
+                1: "Fear",
+                2: "Disgust",
+                3: "Happy",
+                4: "Sad",
+                5: "Angry",
+                6: "Neutral",
+            }
+            labels = []
+            for i in y_pred:
+                labels.append(emotions.get(i))
 
+            print(f"The predicted labels are {y_pred} and the label is {labels}")
+    return 
 
 if __name__ == "__main__":
     main()
