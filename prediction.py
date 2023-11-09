@@ -1,4 +1,5 @@
 from main import *
+from deepface import DeepFace
 
 # Checking for all types of devices available
 if torch.backends.mps.is_available():
@@ -20,25 +21,6 @@ model_path = "raf-db-model_best.pth"
 image_path = "/Users/futuregadgetlab/Developer/GitRepos/POSTER_V2/raf-db/DATASET/test/5/test_0119_aligned.jpg"
 
 
-def main():
-    if os.path.isfile(model_path):
-        print(f"=> loading checkpoint '{model_path}'")
-        checkpoint = torch.load(model_path, map_location=device)
-        best_acc = checkpoint["best_acc"]
-        best_acc = best_acc.to()
-        print(f"best_acc:{best_acc}")
-        model.load_state_dict(checkpoint["state_dict"])
-        print(
-            "=> loaded checkpoint '{}' (epoch {})".format(
-                model_path, checkpoint["epoch"]
-            )
-        )
-    else:
-        print("=> no checkpoint found at '{}'".format(model_path))
-    predict(model, image_path)
-    return
-
-
 def predict(model, image_path):
     with torch.no_grad():
         transform = transforms.Compose(
@@ -52,6 +34,8 @@ def predict(model, image_path):
                 transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
             ]
         )
+        img1 = DeepFace.detectFace(test_image)
+        plt.imshow(img1)
         test_image = Image.open(image_path)
         image_tensor = transform(test_image).unsqueeze(0)
         image_tensor = image_tensor.to(device)
@@ -70,7 +54,3 @@ def predict(model, image_path):
         im_pre_label = np.array(img_pred)
         y_pred = im_pre_label.flatten()
         print(f"The predicted labels are {y_pred}")
-
-
-if __name__ == "__main__":
-    main()
