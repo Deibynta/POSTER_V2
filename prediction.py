@@ -18,7 +18,27 @@ model = torch.nn.DataParallel(model)
 model = model.to(device)
 
 model_path = "raf-db-model_best.pth"
-image_path = "/Users/futuregadgetlab/Developer/GitRepos/POSTER_V2/raf-db/DATASET/test/5/test_0119_aligned.jpg"
+image_path = "/Users/futuregadgetlab/Downloads/1000_F_246149573_1dbnEopMZjSflWG4ZvojXhVVV8cTewTW.jpg"
+
+
+def main():
+    if model_path is not None:
+        if os.path.isfile(model_path):
+            print("=> loading checkpoint '{}'".format(model_path))
+            checkpoint = torch.load(model_path, map_location=device)
+            best_acc = checkpoint["best_acc"]
+            best_acc = best_acc.to()
+            print(f"best_acc:{best_acc}")
+            model.load_state_dict(checkpoint["state_dict"])
+            print(
+                "=> loaded checkpoint '{}' (epoch {})".format(
+                    model_path, checkpoint["epoch"]
+                )
+            )
+        else:
+            print("=> no checkpoint found at '{}'".format(model_path))
+        predict(model, image_path=image_path)
+        return
 
 
 def predict(model, image_path):
@@ -34,10 +54,9 @@ def predict(model, image_path):
                 transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
             ]
         )
-        img1 = DeepFace.detectFace(test_image)
-        plt.imshow(img1)
-        test_image = Image.open(image_path)
-        image_tensor = transform(test_image).unsqueeze(0)
+        from face_detection import face_detection
+        face = face_detection(image_path)
+        image_tensor = transform(face).unsqueeze(0)
         image_tensor = image_tensor.to(device)
 
         model.eval()
@@ -53,4 +72,21 @@ def predict(model, image_path):
         img_pred = img_pred.squeeze().cpu().numpy()
         im_pre_label = np.array(img_pred)
         y_pred = im_pre_label.flatten()
-        print(f"The predicted labels are {y_pred}")
+        emotions = {
+            0: 'Surprise',
+            1: 'Fear',
+            2: 'Disgust',
+            3:'Happy',
+            4:'Sad',
+            5:'Angry',
+            6:'Neutral',
+        }
+        labels = []
+        for i in y_pred:
+            labels.append(emotions.get(i))
+
+        print(f"The predicted labels are {y_pred} and the label is {labels}")
+
+
+if __name__ == "__main__":
+    main()
