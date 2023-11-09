@@ -23,6 +23,7 @@ import datetime
 from torchsampler import ImbalancedDatasetSampler
 from models.PosterV2_7cls import *
 
+
 warnings.filterwarnings("ignore", category=UserWarning)
 
 now = datetime.datetime.now()
@@ -105,7 +106,7 @@ args = parser.parse_args()
 def main():
     # os.environ["CUDA_VISIBLE_DEVICES"] = device
     best_acc = 0
-    print("Training time: " + now.strftime("%m-%d %H:%M"))
+    #print("Training time: " + now.strftime("%m-%d %H:%M"))
 
     # create model
     model = pyramid_trans_expr2(img_size=224, num_classes=7)
@@ -233,9 +234,10 @@ def main():
     )
 
     if args.evaluate is not None:
+        from validation import validate
         if os.path.isfile(args.evaluate):
             print("=> loading checkpoint '{}'".format(args.evaluate))
-            checkpoint = torch.load(args.evaluate)
+            checkpoint = torch.load(args.evaluate, map_location=device)
             best_acc = checkpoint["best_acc"]
             best_acc = best_acc.to()
             print(f"best_acc:{best_acc}")
@@ -251,6 +253,8 @@ def main():
         return
 
     if args.test is not None:
+        from prediction import predict
+
         if os.path.isfile(args.test):
             print("=> loading checkpoint '{}'".format(args.test))
             checkpoint = torch.load(args.test, map_location=device)
@@ -265,7 +269,7 @@ def main():
             )
         else:
             print("=> no checkpoint found at '{}'".format(args.test))
-        prediction(model, args)
+        predict(model, image_path=args.image)
 
         return
     matrix = None
@@ -376,104 +380,12 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
     return top1.avg, losses.avg
 
 
-def validate(val_loader, model, criterion, args):
-    losses = AverageMeter("Loss", ":.4f")
-    top1 = AverageMeter("Accuracy", ":6.3f")
-    progress = ProgressMeter(len(val_loader), [losses, top1], prefix="Test: ")
-
-    # switch to evaluate mode
-    model.eval()
-    D = [
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-    ]
-    with torch.no_grad():
-        for i, (images, target) in enumerate(val_loader):
-            images = images.to(device)
-            target = target.to(device)
-            output = model(images)
-            loss = criterion(output, target)
-
-            # measure accuracy and record loss
-            acc, _ = accuracy(output, target, topk=(1, 5))
-            losses.update(loss.item(), images.size(0))
-            top1.update(acc[0], images.size(0))
-
-            topk = (1,)
-            # """Computes the accuracy over the k top predictions for the specified values of k"""
-            with torch.no_grad():
-                maxk = max(topk)
-                # batch_size = target.size(0)
-                _, pred = output.topk(maxk, 1, True, True)
-                pred = pred.t()
-
-            output = pred
-            target = target.squeeze().cpu().numpy()
-            output = output.squeeze().cpu().numpy()
-
-            im_re_label = np.array(target)
-            im_pre_label = np.array(output)
-            y_ture = im_re_label.flatten()
-            im_re_label.transpose()
-            y_pred = im_pre_label.flatten()
-            im_pre_label.transpose()
-
-            C = metrics.confusion_matrix(y_ture, y_pred, labels=[0, 1, 2, 3, 4, 5, 6])
-            D += C
-
-            if i % args.print_freq == 0:
-                progress.display(i)
-
-        print(" **** Accuracy {top1.avg:.3f} *** ".format(top1=top1))
-        with open("./log/" + time_str + "log.txt", "a") as f:
-            f.write(" * Accuracy {top1.avg:.3f}".format(top1=top1) + "\n")
-    print(D)
-    return top1.avg, losses.avg, output, target, D
-
 
 def save_checkpoint(state, is_best, args):
     torch.save(state, args.checkpoint_path)
     if is_best:
         best_state = state.pop("optimizer")
         torch.save(best_state, args.best_checkpoint_path)
-
-
-def prediction(model, args):
-    with torch.no_grad():
-        transform = transforms.Compose(
-            [
-                transforms.Resize((224, 224)),
-                transforms.RandomHorizontalFlip(),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
-                transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
-            ]
-        )
-        test_image = Image.open(args.image)
-        image_tensor = transform(test_image).unsqueeze(0)
-        image_tensor = image_tensor.to(device)
-
-        model.eval()
-        img_pred = model(image_tensor)
-        topk = (3,)
-        with torch.no_grad():
-            maxk = max(topk)
-            # batch_size = target.size(0)
-            _, pred = img_pred.topk(maxk, 1, True, True)
-            pred = pred.t()
-
-        img_pred = pred
-        img_pred = img_pred.squeeze().cpu().numpy()
-        im_pre_label = np.array(img_pred)
-        y_pred = im_pre_label.flatten()
-        print(f"The predicted labels are {y_pred}")
 
 
 class AverageMeter(object):
