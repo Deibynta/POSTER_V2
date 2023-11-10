@@ -1,4 +1,5 @@
-# POSTER V2: A simpler and stronger facial expression recognition network 
+
+ # POSTER V2: A simpler and stronger facial expression recognition network 
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/poster-v2-a-simpler-and-stronger-facial/facial-expression-recognition-on-affectnet)](https://paperswithcode.com/sota/facial-expression-recognition-on-affectnet?p=poster-v2-a-simpler-and-stronger-facial)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/poster-v2-a-simpler-and-stronger-facial/facial-expression-recognition-on-raf-db)](https://paperswithcode.com/sota/facial-expression-recognition-on-raf-db?p=poster-v2-a-simpler-and-stronger-facial)
@@ -16,18 +17,16 @@ Extensive experiments on several standard datasets show that our POSTER V2 achie
 For example, POSTER V2 reached 92.21% on RAF-DB, 67.49% on AffectNet (7 cls) and 63.77% on AffectNet (8 cls), respectively, using only 8.4G floating point operations (FLOPs) and 43.7M parameters (Param). 
 This demonstrates the effectiveness of our improvements. 
 ### Preparation
-- Preparing Data
-  
+- Preparing Data\
+  RAF-DB consists of 7 emotions Suprise, Fear, Disgust, Happy, Sad, Anger, Neutral\
   As an example, assume we wish to run RAF-DB. We need to make sure it have a structure like following:
   - The Dataset must contain two main classes `train` and `test`
   - Each class must contain images placed inside these folders:
-		- 1
+	- 1
 
-		- 2\
-
-		...
-
-		- 7
+	- 2\
+  	 ...
+	- 7
    
 	```
 	- path/to/dataset/
