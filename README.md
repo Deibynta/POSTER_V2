@@ -1,3 +1,4 @@
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OkabeRintaro10/POSTER_V2/blob/main/main.py)
 # POSTER V2: A simpler and stronger facial expression recognition network 
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/poster-v2-a-simpler-and-stronger-facial/facial-expression-recognition-on-affectnet)](https://paperswithcode.com/sota/facial-expression-recognition-on-affectnet?p=poster-v2-a-simpler-and-stronger-facial)
@@ -25,12 +26,14 @@ This demonstrates the effectiveness of our improvements.
 	```
 	- data/raf-db/
 		 train/
-		     train_00001_aligned.jpg
-		     train_00002_aligned.jpg
+		 		1/
+		     	train_00001_aligned.jpg
+		     	train_00002_aligned.jpg
 		     ...
 		 valid/
-		     test_0001_aligned.jpg
-		     test_0002_aligned.jpg
+		 		1/
+		     	test_0001_aligned.jpg
+		     	test_0002_aligned.jpg
 		     ...
 	```
 
@@ -127,7 +130,11 @@ You can continue your training by running:
 python main.py --data path/to/dataset --resume checkpoint/to/continue
 ```
 
-
+### Prediction
+You can predict the classes for an image by running:
+```
+python prediction.py --test path/to/checkpoint --image path/to/image
+```
 
 ## License
 
