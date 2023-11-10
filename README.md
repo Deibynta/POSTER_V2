@@ -26,13 +26,13 @@ This demonstrates the effectiveness of our improvements.
 	- path/to/dataset/
 		 train/
 		 	1/
-		    train_00001_aligned.jpg
-		    train_00002_aligned.jpg
+		    	train_00001_aligned.jpg
+		    	rain_00002_aligned.jpg
 		     ...
 		 test/
 		 	1/
-		    test_0001_aligned.jpg
-		    test_0002_aligned.jpg
+		    	test_0001_aligned.jpg
+		    	test_0002_aligned.jpg
 		     ...
 	```
 
