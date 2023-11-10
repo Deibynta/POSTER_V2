@@ -19,12 +19,12 @@ This demonstrates the effectiveness of our improvements.
 - Preparing Data
   
   As an example, assume we wish to run RAF-DB. We need to make sure it have a structure like following:
-  * The Dataset must contain two main classes `train` and `test`
-  * Each class must contain images placed inside these folders:
-   * 1
-   * 2\
-   ...
-   * 7
+  - The Dataset must contain two main classes `train` and `test`
+  - Each class must contain images placed inside these folders:
+  	- - 1
+	- -  2\
+   	...
+   	- - 7
    
 	```
 	- path/to/dataset/
