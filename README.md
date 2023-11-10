@@ -25,14 +25,14 @@ This demonstrates the effectiveness of our improvements.
 	```
 	- path/to/dataset/
 		 train/
-		 		1/
-		     	train_00001_aligned.jpg
-		     	train_00002_aligned.jpg
+		 	1/
+		    train_00001_aligned.jpg
+		    train_00002_aligned.jpg
 		     ...
 		 test/
-		 		1/
-		     	test_0001_aligned.jpg
-		     	test_0002_aligned.jpg
+		 	1/
+		    test_0001_aligned.jpg
+		    test_0002_aligned.jpg
 		     ...
 	```
 
@@ -132,7 +132,7 @@ python main.py --data path/to/dataset --resume checkpoint/to/continue
 ### Prediction
 You can predict the classes for an image by running:
 ```
-python prediction.py --test path/to/checkpoint --image path/to/image
+python main.py --test path/to/checkpoint --image path/to/image
 ```
 
 ## License
