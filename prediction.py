@@ -19,7 +19,13 @@ model = model.to(device)
 
 model_path = "raf-db-model_best.pth"
 image_arr = [
-    "/Users/futuregadgetlab/Downloads/1000_F_246149573_1dbnEopMZjSflWG4ZvojXhVVV8cTewTW.jpg"
+    "/Users/futuregadgetlab/Downloads/Testing/pexels-kailash-kumar-693791.jpg",  # angry
+    "/Users/futuregadgetlab/Downloads/Testing/pexels-luna-lovegood-1104007.jpg",  # happy
+    "/Users/futuregadgetlab/Downloads/Testing/pexels-anna-shvets-3771681.jpg",  # sad
+    "/Users/futuregadgetlab/Downloads/Testing/pexels-pixabay-415229.jpg",  # sad
+    "/Users/futuregadgetlab/Downloads/Testing/little-boy-crying-isolated-on-260nw-97198298.jpeg",  # sad
+    "/Users/futuregadgetlab/Downloads/Testing/pexels-monstera-production-7114749.jpg",  # angry
+    "/Users/futuregadgetlab/Downloads/Testing/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvay1wci1zMzAtdGVuLTAyMi1qb2I1MS1sLmpwZw.jpeg", #surprised
 ]
 
 
@@ -66,7 +72,7 @@ def predict(model, image_path):
 
             model.eval()
             img_pred = model(image_tensor)
-            topk = (3,)
+            topk = (1,)
             with torch.no_grad():
                 maxk = max(topk)
                 # batch_size = target.size(0)
@@ -90,8 +96,9 @@ def predict(model, image_path):
             for i in y_pred:
                 labels.append(emotions.get(i))
 
-            print(f"The predicted labels are {y_pred} and the label is {labels}")
-    return 
+            print(f"    [!] The predicted labels are {y_pred} and the label is {labels}")
+    return
+
 
 if __name__ == "__main__":
     main()
