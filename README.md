@@ -17,11 +17,15 @@ For example, POSTER V2 reached 92.21% on RAF-DB, 67.49% on AffectNet (7 cls) and
 This demonstrates the effectiveness of our improvements. 
 ### Preparation
 - Preparing Data
-
-  Download the val dataset from [baidu disk](https://pan.baidu.com/s/1OF6ldYQXpCaAyj9WyTF5Mg?pwd=POST).
   
   As an example, assume we wish to run RAF-DB. We need to make sure it have a structure like following:
-
+  * The Dataset must contain two main classes `train` and `test`
+  * Each class must contain images placed inside these folders:
+   * 1
+   * 2\
+   ...
+   * 7
+   
 	```
 	- path/to/dataset/
 		 train/
