@@ -1,4 +1,3 @@
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OkabeRintaro10/POSTER_V2/blob/main/main.py)
 # POSTER V2: A simpler and stronger facial expression recognition network 
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/poster-v2-a-simpler-and-stronger-facial/facial-expression-recognition-on-affectnet)](https://paperswithcode.com/sota/facial-expression-recognition-on-affectnet?p=poster-v2-a-simpler-and-stronger-facial)
@@ -24,13 +23,13 @@ This demonstrates the effectiveness of our improvements.
   As an example, assume we wish to run RAF-DB. We need to make sure it have a structure like following:
 
 	```
-	- data/raf-db/
+	- path/to/dataset/
 		 train/
 		 		1/
 		     	train_00001_aligned.jpg
 		     	train_00002_aligned.jpg
 		     ...
-		 valid/
+		 test/
 		 		1/
 		     	test_0001_aligned.jpg
 		     	test_0002_aligned.jpg
