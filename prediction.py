@@ -18,15 +18,14 @@ model = torch.nn.DataParallel(model)
 model = model.to(device)
 
 model_path = "raf-db-model_best.pth"
-image_arr = [
-    "/Users/futuregadgetlab/Downloads/Testing/pexels-kailash-kumar-693791.jpg",  # angry
-    "/Users/futuregadgetlab/Downloads/Testing/pexels-luna-lovegood-1104007.jpg",  # happy
-    "/Users/futuregadgetlab/Downloads/Testing/pexels-anna-shvets-3771681.jpg",  # sad
-    "/Users/futuregadgetlab/Downloads/Testing/pexels-pixabay-415229.jpg",  # sad
-    "/Users/futuregadgetlab/Downloads/Testing/little-boy-crying-isolated-on-260nw-97198298.jpeg",  # sad
-    "/Users/futuregadgetlab/Downloads/Testing/pexels-monstera-production-7114749.jpg",  # angry
-    "/Users/futuregadgetlab/Downloads/Testing/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvay1wci1zMzAtdGVuLTAyMi1qb2I1MS1sLmpwZw.jpeg", #surprised
-]
+image_arr = []
+for foldername, subfolders, filenames in os.walk(
+    "/Users/futuregadgetlab/Downloads/Testing/"
+):
+    for filename in filenames:
+        # Construct the full path to the file
+        file_path = os.path.join(foldername, filename)
+        image_arr.append(f"{file_path}")
 
 
 def main():
@@ -64,39 +63,39 @@ def predict(model, image_path):
                 transforms.RandomErasing(p=1, scale=(0.05, 0.05)),
             ]
         )
+        face = face_detection(image_path)
+        image_tensor = transform(face).unsqueeze(0)
+        image_tensor = image_tensor.to(device)
 
-        for image_file in image_arr:
-            face = face_detection(image_file)
-            image_tensor = transform(face).unsqueeze(0)
-            image_tensor = image_tensor.to(device)
+        model.eval()
+        img_pred = model(image_tensor)
+        topk = (3,)
+        with torch.no_grad():
+            maxk = max(topk)
+            # batch_size = target.size(0)
+            _, pred = img_pred.topk(maxk, 1, True, True)
+            pred = pred.t()
 
-            model.eval()
-            img_pred = model(image_tensor)
-            topk = (1,)
-            with torch.no_grad():
-                maxk = max(topk)
-                # batch_size = target.size(0)
-                _, pred = img_pred.topk(maxk, 1, True, True)
-                pred = pred.t()
+        img_pred = pred
+        img_pred = img_pred.squeeze().cpu().numpy()
+        im_pre_label = np.array(img_pred)
+        y_pred = im_pre_label.flatten()
+        emotions = {
+            0: "Surprise",
+            1: "Fear",
+            2: "Disgust",
+            3: "Happy",
+            4: "Sad",
+            5: "Angry",
+            6: "Neutral",
+        }
+        labels = []
+        for i in y_pred:
+            labels.append(emotions.get(i))
 
-            img_pred = pred
-            img_pred = img_pred.squeeze().cpu().numpy()
-            im_pre_label = np.array(img_pred)
-            y_pred = im_pre_label.flatten()
-            emotions = {
-                0: "Surprise",
-                1: "Fear",
-                2: "Disgust",
-                3: "Happy",
-                4: "Sad",
-                5: "Angry",
-                6: "Neutral",
-            }
-            labels = []
-            for i in y_pred:
-                labels.append(emotions.get(i))
-
-            print(f"    [!] The predicted labels are {y_pred} and the label is {labels}")
+        print(
+            f"-->Image Path {image_path} [!] The predicted labels are {y_pred} and the label is {labels}"
+            )
     return
 
 

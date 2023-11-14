@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.DS_Store
 
 # C extensions
 *.so
@@ -164,3 +165,4 @@ raf-db/
 log/
 raf-db-model_best.pth
 .DS_Store
+Images/
