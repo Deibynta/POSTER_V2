@@ -141,7 +141,7 @@ def get_blocks(num_layers):
     return blocks1, blocks2, blocks3
 
 
-class Backbone(Module):
+'''class Backbone(Module):
     def __init__(self, num_layers, drop_ratio, mode='ir'):
         super(Backbone, self).__init__()
         # assert num_layers in [50, 100, 152], 'num_layers should be 50,100, or 152'
@@ -205,7 +205,91 @@ class Backbone(Module):
         # x = self.output_layer(x)
         # return l2_norm(x)
 
+        return x1, x2, x3'''
+
+class Backbone(Module):
+    def __init__(self, num_layers, drop_ratio, mode='ir', in_planes, ratio=16):
+        super(Backbone, self).__init__()
+        # assert num_layers in [50, 100, 152], 'num_layers should be 50,100, or 152'
+        assert mode in ['ir', 'ir_se'], 'mode should be ir or ir_se'
+        blocks1, blocks2, blocks3 = get_blocks(num_layers)
+        # blocks2 = get_blocks(num_layers)
+        if mode == 'ir':
+            unit_module = bottleneck_IR
+        elif mode == 'ir_se':
+            unit_module = bottleneck_IR_SE
+        self.input_layer = Sequential(Conv2d(3, 64, (3, 3), 1, 1, bias=False),
+                                      BatchNorm2d(64),
+                                      PReLU(64))
+        self.output_layer = Sequential(BatchNorm2d(512),
+                                       Dropout(drop_ratio),
+                                       Flatten(),
+                                       Linear(512 * 7 * 7, 512),
+                                       BatchNorm1d(512))
+        modules1 = []
+        for block in blocks1:
+            for bottleneck in block:
+                modules1.append(
+                    unit_module(bottleneck.in_channel,
+                                bottleneck.depth,
+                                bottleneck.stride))
+
+        modules2 = []
+        for block in blocks2:
+            for bottleneck in block:
+                modules2.append(
+                    unit_module(bottleneck.in_channel,
+                                bottleneck.depth,
+                                bottleneck.stride))
+
+        modules3 = []
+        for block in blocks3:
+            for bottleneck in block:
+                modules3.append(
+                    unit_module(bottleneck.in_channel,
+                                bottleneck.depth,
+                                bottleneck.stride))
+        # modules4 = []
+        # for block in blocks4:
+        #     for bottleneck in block:
+        #         modules4.append(
+        #             unit_module(bottleneck.in_channel,
+        #                         bottleneck.depth,
+        #                         bottleneck.stride))
+        self.body1 = Sequential(*modules1)
+        self.body2 = Sequential(*modules2)
+        self.body3 = Sequential(*modules3)
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+           
+        self.fc = nn.Sequential(nn.Conv2d(in_planes, in_planes // 16, 1, bias=False),
+                               nn.ReLU(),
+                               nn.Conv2d(in_planes // 16, in_planes, 1, bias=False))
+        self.sigmoid = nn.Sigmoid()
+        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
+        self.sigmoid = nn.Sigmoid()
+        # self.body4 = Sequential(*modules4)  
+    
+    def forward(self, x):
+        x = F.interpolate(x, size=112)
+        x = self.input_layer(x)
+        avg_out = self.fc(self.avg_pool(x))
+        max_out = self.fc(self.max_pool(x))
+        out = avg_out + max_out
+        X = self.sigmoid(out)
+        avg_out = torch.mean(x, dim=1, keepdim=True)
+        max_out, _ = torch.max(x, dim=1, keepdim=True)
+        x = torch.cat([avg_out, max_out], dim=1)
+        x = self.conv1(x)
+        x1 = self.body1(x)
+        x2 = self.body2(x1)
+        x3 = self.body3(x2)
+
+        # x = self.output_layer(x)
+        # return l2_norm(x)
+
         return x1, x2, x3
+
 
 class ChannelAttention(Module):
     def __init__(self, in_planes, ratio=16):
