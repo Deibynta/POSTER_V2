@@ -313,7 +313,7 @@ class pyramid_trans_expr2(nn.Module):
             mobilefacenet_path,
             map_location=lambda storage, loc: storage,
         )
-        #self.face_landback.load_state_dict(face_landback_checkpoint["state_dict"])
+        self.face_landback.load_state_dict(face_landback_checkpoint["state_dict"])
         checkpoint = torch.load(ir50_path, map_location=torch.device('cpu'))
         if "state_dict" in checkpoint:
              checkpoint = checkpoint["state_dict"]  # Extract actual state_dict
