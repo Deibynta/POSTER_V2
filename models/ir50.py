@@ -262,15 +262,15 @@ class Backbone(Module):
         self.body1 = Sequential(*modules1)
         self.body2 = Sequential(*modules2)
         self.body3 = Sequential(*modules3)
-        self.avg_pool = nn.AdaptiveAvgPool2d(1)
-        self.max_pool = nn.AdaptiveMaxPool2d(1)
+        self.avg_pool = AdaptiveAvgPool2d(1)
+        self.max_pool = AdaptiveMaxPool2d(1)
            
-        self.fc = nn.Sequential(nn.Conv2d(in_planes, in_planes // 16, 1, bias=False),
-                               nn.ReLU(),
-                               nn.Conv2d(in_planes // 16, in_planes, 1, bias=False))
-        self.sigmoid = nn.Sigmoid()
-        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
-        self.sigmoid = nn.Sigmoid()
+        self.fc = Sequential(Conv2d(in_planes, in_planes // 16, 1, bias=False),
+                               ReLU(),
+                               Conv2d(in_planes // 16, in_planes, 1, bias=False))
+        self.sigmoid = Sigmoid()
+        self.conv1 = Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
+        self.sigmoid = Sigmoid()
         # self.body4 = Sequential(*modules4)  
     
     def forward(self, x):
