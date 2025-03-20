@@ -303,7 +303,7 @@ class pyramid_trans_expr2(nn.Module):
         self.face_landback = MobileFaceNet([112, 112], 136)
 
         mobilefacenet_path = os.path.join(
-            os.getcwd(), "models/pretrain/mobilefacenet_model_best.pth.tar"
+            os.getcwd(), "models/pretrain/mobilefacenet_model_best.pth"
         )
         ir50_path = os.path.join(os.getcwd(), "models/pretrain/ir50.pth")
 
