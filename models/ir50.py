@@ -1,5 +1,6 @@
 from torch.nn import Linear, Conv2d, BatchNorm1d, BatchNorm2d, PReLU, ReLU, Sigmoid, Dropout2d, Dropout, AvgPool2d, \
     MaxPool2d, AdaptiveAvgPool2d, Sequential, Module, Parameter
+import torch.nn as nn
 import torch.nn.functional as F
 import torch
 from collections import namedtuple
@@ -262,15 +263,15 @@ class Backbone(Module):
         self.body1 = Sequential(*modules1)
         self.body2 = Sequential(*modules2)
         self.body3 = Sequential(*modules3)
-        self.avg_pool = AdaptiveAvgPool2d(1)
-        self.max_pool = AdaptiveMaxPool2d(1)
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
            
-        self.fc = Sequential(Conv2d(in_planes, in_planes // 16, 1, bias=False),
-                               ReLU(),
-                               Conv2d(in_planes // 16, in_planes, 1, bias=False))
-        self.sigmoid = Sigmoid()
-        self.conv1 = Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
-        self.sigmoid = Sigmoid()
+        self.fc = Sequential(nn.Conv2d(in_planes, in_planes // 16, 1, bias=False),
+                               nn.ReLU(),
+                               nn.Conv2d(in_planes // 16, in_planes, 1, bias=False))
+        self.sigmoid = nn.Sigmoid()
+        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
+        self.sigmoid = nn.Sigmoid()
         # self.body4 = Sequential(*modules4)  
     
     def forward(self, x):
