@@ -287,6 +287,7 @@ def main():
         )
 
         # evaluate on validation set
+        from validation import validate
         val_acc, val_los, output, target, D = validate(
             val_loader, model, criterion, args
         )
