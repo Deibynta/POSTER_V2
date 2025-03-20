@@ -193,7 +193,20 @@ class Backbone(Module):
         self.body1 = Sequential(*modules1)
         self.body2 = Sequential(*modules2)
         self.body3 = Sequential(*modules3)
-        # self.body4 = Sequential(*modules4)
+        # self.body4 = Sequential(*modules4)  
+    
+    def forward(self, x):
+        x = F.interpolate(x, size=112)
+        x = self.input_layer(x)
+        x1 = self.body1(x)
+        x2 = self.body2(x1)
+        x3 = self.body3(x2)
+
+        # x = self.output_layer(x)
+        # return l2_norm(x)
+
+        return x1, x2, x3
+
 class ChannelAttention(Module):
     def __init__(self, in_planes, ratio=16):
         super(ChannelAttention, self).__init__()
@@ -224,20 +237,6 @@ class SpatialAttention(Module):
         x = torch.cat([avg_out, max_out], dim=1)
         x = self.conv1(x)
         return self.sigmoid(x)
-
-    
-    
-    def forward(self, x):
-        x = F.interpolate(x, size=112)
-        x = self.input_layer(x)
-        x1 = self.body1(x)
-        x2 = self.body2(x1)
-        x3 = self.body3(x2)
-
-        # x = self.output_layer(x)
-        # return l2_norm(x)
-
-        return x1, x2, x3
 
 def load_pretrained_weights(model, checkpoint):
     import collections
