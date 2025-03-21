@@ -281,14 +281,15 @@ class Backbone(Module):
         avg_out = self.fc(self.avg_pool(x))
         max_out = self.fc(self.max_pool(x))
         out = avg_out + max_out
+        print(out.shape)
         x = self.sigmoid(out)
-        print("Channel Attention: ",x.shape)
+        '''print("Channel Attention: ",x.shape)
         avg_out = torch.mean(x, dim=1, keepdim=True)
         max_out, _ = torch.max(x, dim=1, keepdim=True)
         x = torch.cat([avg_out, max_out], dim=1)
         x = self.conv1(x)
         x= self.sigmoid(x)
-        print("Spatial Attention: ",x.shape)
+        print("Spatial Attention: ",x.shape)'''
         x1 = self.body1(x)
         x2 = self.body2(x1)
         x3 = self.body3(x2)
