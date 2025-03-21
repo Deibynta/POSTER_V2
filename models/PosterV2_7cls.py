@@ -327,8 +327,8 @@ class pyramid_trans_expr2(nn.Module):
         self.VIT = VisionTransformer(depth=2, embed_dim=embed_dim)
 
         self.ir_back = Backbone(50, 0.0, "ir")
-        self.ChannelAttention(50, 16)
-        self.SpatialAttention()
+        self.ca = ChannelAttention(50, 16)
+        self.sa = SpatialAttention()
         ir_checkpoint = torch.load(
             ir50_path,
             map_location=lambda storage, loc: storage,
@@ -422,7 +422,16 @@ class pyramid_trans_expr2(nn.Module):
             self.attn2(x_window2, q2),
             self.attn3(x_window3, q3),
         )
-
+        o1, o2, o3 = (
+            self.ca(x_window1, q1),
+            self.ca(x_window2, q2),
+            self.ca(x_window3, q3),
+        )
+        o1, o2, o3 = (
+        self.sa(x_window1, q1),
+        self.sa(x_window2, q2),
+        self.sa(x_window3, q3),
+        )
         o1, o2, o3 = (
             self.ffn1(o1, shortcut1),
             self.ffn2(o2, shortcut2),
