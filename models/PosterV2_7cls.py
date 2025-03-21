@@ -423,14 +423,14 @@ class pyramid_trans_expr2(nn.Module):
             self.attn3(x_window3, q3),
         )
         o1, o2, o3 = (
-            self.ca(x_window1, q1),
-            self.ca(x_window2, q2),
-            self.ca(x_window3, q3),
+            self.ca(o1),
+            self.ca(o2),
+            self.ca(o3),
         )
         o1, o2, o3 = (
-        self.sa(x_window1, q1),
-        self.sa(x_window2, q2),
-        self.sa(x_window3, q3),
+        self.sa(o1),
+        self.sa(o2),
+        self.sa(o3),
         )
         o1, o2, o3 = (
             self.ffn1(o1, shortcut1),
