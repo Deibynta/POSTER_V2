@@ -142,7 +142,7 @@ def get_blocks(num_layers):
     return blocks1, blocks2, blocks3
 
 
-'''class Backbone(Module):
+class Backbone(Module):
     def __init__(self, num_layers, drop_ratio, mode='ir'):
         super(Backbone, self).__init__()
         # assert num_layers in [50, 100, 152], 'num_layers should be 50,100, or 152'
@@ -206,9 +206,9 @@ def get_blocks(num_layers):
         # x = self.output_layer(x)
         # return l2_norm(x)
 
-        return x1, x2, x3'''
+        return x1, x2, x3
 
-class Backbone(Module):
+'''class Backbone(Module):
     def __init__(self, num_layers, drop_ratio, mode='ir'):
         in_planes=num_layers
         ratio=drop_ratio
@@ -297,7 +297,7 @@ class Backbone(Module):
         # x = self.output_layer(x)
         # return l2_norm(x)
 
-        return x1, x2, x3
+        return x1, x2, x3'''
 
 
 class ChannelAttention(Module):
