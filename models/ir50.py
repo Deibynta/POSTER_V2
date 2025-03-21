@@ -210,8 +210,8 @@ def get_blocks(num_layers):
 
 class Backbone(Module):
     def __init__(self, num_layers, drop_ratio, mode='ir'):
-        in_planes=64
-        ratio=16
+        in_planes=num_layers
+        ratio=drop_ratio
         kernel_size=7
         super(Backbone, self).__init__()
         # assert num_layers in [50, 100, 152], 'num_layers should be 50,100, or 152'
