@@ -425,18 +425,12 @@ class pyramid_trans_expr2(nn.Module):
             self.attn3(x_window3, q3),
         )
         print("att1 ",o1.shape)
-        '''o1, o2, o3 = (
+        o1, o2, o3 = (
             self.cb(o1),
             self.cb(o2),
             self.cb(o3),
         )
-        print("after ca ",o1.shape)
-        o1, o2, o3 = (
-        self.cb(o1),
-        self.cb(o2),
-        self.cb(o3),
-        )'''
-        print("after sa ",o1.shape)
+        print("after cbam ",o1.shape)
         o1, o2, o3 = (
             self.ffn1(o1, shortcut1),
             self.ffn2(o2, shortcut2),
