@@ -328,7 +328,7 @@ class ChannelAttention(Module):
         return self.sigmoid(out)'''
 
 class SpatialAttention(nn.Module):
-    def __init__(self,kernel=7):
+    def __init__(self,kernel=3):
         super().__init__()
         assert kernel in (3,7),"Kernel size must be in 3 or 7"
         padding = 1 if kernel == 3 else 3
