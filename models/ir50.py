@@ -336,9 +336,9 @@ class SpatialAttention(Module):
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
         print("spatial",x.shape)
-        avg_out = torch.mean(x,dim=1,keepdim=True)
-        max_out = torch.max(x,dim=1,keepdim=True).values
-        x = torch.cat([avg_out,max_out],dim=1)
+        avg_out = torch.mean(x,dim=0,keepdim=True)
+        max_out = torch.max(x,dim=0,keepdim=True).values
+        x = torch.cat([avg_out,max_out],dim=0)
         print("spatial",x.shape)
         x = self.cnn(x)
         print("spatial",x.shape)
