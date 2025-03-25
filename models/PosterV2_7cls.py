@@ -6,6 +6,7 @@ from .mobilefacenet import MobileFaceNet
 from .ir50 import Backbone
 from .ir50 import ChannelAttention
 from .ir50 import SpatialAttention
+from .ir50 import cbam
 from .vit_model import VisionTransformer, PatchEmbed
 from timm.models.layers import trunc_normal_, DropPath
 from thop import profile
