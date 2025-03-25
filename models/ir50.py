@@ -340,8 +340,11 @@ class SpatialAttention(Module):
         max_out = torch.max(x,dim=1,keepdim=True).values
         x = torch.cat([avg_out,max_out],dim=1)
         print("spatial",x.shape)
+        print("spatial",x.shape[0])
         print("spatial",x.shape[1])
-        x=torch.transpose(x, 2, 1)
+        print("spatial",x.shape[2])
+        print("spatial",x.shape[3])
+        x=torch.transpose(x, 0, 1)
         x = self.cnn(x)
         print("spatial",x.shape)
         return self.sigmoid(x)
