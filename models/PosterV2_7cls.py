@@ -417,19 +417,20 @@ class pyramid_trans_expr2(nn.Module):
         x_window2, shortcut2 = self.window2(x_ir2)
         x_window3, shortcut3 = self.window3(x_ir3)
 
+        print("before att1 ",o1.shape)
         o1, o2, o3 = (
             self.attn1(x_window1, q1),
             self.attn2(x_window2, q2),
             self.attn3(x_window3, q3),
         )
-        print(o1.shape)
+        print("att1 ",o1.shape)
         
         o1, o2, o3 = (
             self.ca(o1),
             self.ca(o2),
             self.ca(o3),
         )
-        print(o1.shape)
+        print("after ca ",o1.shape)
         '''o1, o2, o3 = (
         self.sa(o1),
         self.sa(o2),
