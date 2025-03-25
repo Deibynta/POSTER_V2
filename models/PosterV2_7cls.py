@@ -430,9 +430,9 @@ class pyramid_trans_expr2(nn.Module):
             self.cb(o2),
             self.cb(o3),
         )
-        spatial_mask_o1 = self.cbam.get_spatial(o1)
-        spatial_mask_o2 = self.cbam.get_spatial(o2)
-        spatial_mask_o3 = self.cbam.get_spatial(o3)
+        spatial_mask_o1 = self.cb.get_spatial(o1)
+        spatial_mask_o2 = self.cb.get_spatial(o2)
+        spatial_mask_o3 = self.cb.get_spatial(o3)
         print("after cbam ",o1.shape)
         o1, o2, o3 = (
             self.ffn1(o1, shortcut1),
