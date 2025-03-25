@@ -413,8 +413,8 @@ class pyramid_trans_expr2(nn.Module):
         x_ir1, x_ir2, x_ir3 = self.ir_back(x)
 
         x_ir1, x_ir2, x_ir3 = self.conv1(x_ir1), self.conv2(x_ir2), self.conv3(x_ir3)
-        x_ir1, x_ir2, x_ir3 = self.ca(x_ir1), self.ca(x_ir2), self.ca(x_ir3)
-        x_ir1, x_ir2, x_ir3 = self.sa(x_ir1), self.sa(x_ir2), self.sa(x_ir3)
+        '''x_ir1, x_ir2, x_ir3 = self.ca(x_ir1), self.ca(x_ir2), self.ca(x_ir3)
+        x_ir1, x_ir2, x_ir3 = self.sa(x_ir1), self.sa(x_ir2), self.sa(x_ir3)'''
         x_window1, shortcut1 = self.window1(x_ir1)
         x_window2, shortcut2 = self.window2(x_ir2)
         x_window3, shortcut3 = self.window3(x_ir3)
@@ -425,19 +425,18 @@ class pyramid_trans_expr2(nn.Module):
             self.attn3(x_window3, q3),
         )
         print("att1 ",o1.shape)
-        '''
         o1, o2, o3 = (
-            self.ca(o1),
-            self.ca(o2),
-            self.ca(o3),
+            self.cbam(o1),
+            self.cbam(o2),
+            self.cbam(o3),
         )
         print("after ca ",o1.shape)
         o1, o2, o3 = (
-        self.sa(o1),
-        self.sa(o2),
-        self.sa(o3),
+        self.cbam(o1),
+        self.cbam(o2),
+        self.cbam(o3),
         )
-        print("after sa ",o1.shape)'''
+        print("after sa ",o1.shape)
         o1, o2, o3 = (
             self.ffn1(o1, shortcut1),
             self.ffn2(o2, shortcut2),
