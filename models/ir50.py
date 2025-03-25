@@ -326,7 +326,7 @@ class SpatialAttention(Module):
     def __init__(self, kernel_size=7):
         super(SpatialAttention, self).__init__()
 
-        self.conv1 = nn.Conv2d(128, 1, kernel_size, padding=kernel_size//2, bias=False)
+        self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size//2, bias=False)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
