@@ -343,7 +343,6 @@ class SpatialAttention(Module):
         print("spatial",x.shape[0])
         print("spatial",x.shape[1])
         print("spatial",x.shape[2])
-        print("spatial",x.shape[3])
         x=torch.transpose(x, 0, 1)
         x = self.cnn(x)
         print("spatial",x.shape)
