@@ -320,7 +320,7 @@ class ChannelAttention(Module):
         max_out = self.fc(self.max_pool(x))
         print("CBAM 3: ",x.shape)
         out = avg_out + max_out
-        return self.sigmoid(out)
+        return out
 
 class SpatialAttention(Module):
     def __init__(self, kernel_size=7):
