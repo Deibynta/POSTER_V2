@@ -332,7 +332,7 @@ class SpatialAttention(Module):
         super().__init__()
         assert kernel in (3,7),"Kernel size must be in 3 or 7"
         padding = 1 if kernel == 3 else 3
-        self.cnn = nn.Conv2d(2,1,kernel_size=kernel,padding=padding,bias=False)
+        self.cnn = nn.Conv2d(64,1,kernel_size=kernel,padding=padding,bias=False)
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
         avg_out = torch.mean(x,dim=1,keepdim=True)
