@@ -340,6 +340,7 @@ class SpatialAttention(Module):
         max_out = torch.max(x,dim=1,keepdim=True).values
         x = torch.cat([avg_out,max_out],dim=1)
         print("spatial",x.shape)
+        print("spatial",x.shape[1])
         x=torch.transpose(x, 0, 2)
         x = self.cnn(x)
         print("spatial",x.shape)
