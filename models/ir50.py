@@ -335,10 +335,13 @@ class SpatialAttention(Module):
         self.cnn = nn.Conv2d(2,1,kernel_size=kernel,padding=padding,bias=False)
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
+        print("spatial",x.shape)
         avg_out = torch.mean(x,dim=1,keepdim=True)
         max_out = torch.max(x,dim=1,keepdim=True).values
         x = torch.cat([avg_out,max_out],dim=1)
+        print("spatial",x.shape)
         x = self.cnn(x)
+        print("spatial",x.shape)
         return self.sigmoid(x)
         
 class cbam(Module):
