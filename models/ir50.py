@@ -351,7 +351,7 @@ class cbam(Module):
         print(x.shape)
         x = self.ca(x) * x
         print(x.shape)
-        x = self.sa(x) * x
+        #x = self.sa(x) * x
         return x
     
     def get_spatial(self,x):
