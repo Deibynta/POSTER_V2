@@ -315,7 +315,9 @@ class ChannelAttention(Module):
     def forward(self, x):
         print(x.shape)
         avg_out = self.fc(self.avg_pool(x))
+        print(x.shape)
         max_out = self.fc(self.max_pool(x))
+        print(x.shape)
         out = avg_out + max_out
         return self.sigmoid(out)
 
