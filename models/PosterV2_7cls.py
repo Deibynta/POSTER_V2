@@ -328,8 +328,7 @@ class pyramid_trans_expr2(nn.Module):
         self.VIT = VisionTransformer(depth=2, embed_dim=embed_dim)
 
         self.ir_back = Backbone(50, 0.0, "ir")
-        self.ca = ChannelAttention(64, 16)
-        self.sa = SpatialAttention()
+        self.cb = cbam(64)
         ir_checkpoint = torch.load(
             ir50_path,
             map_location=lambda storage, loc: storage,
@@ -427,15 +426,15 @@ class pyramid_trans_expr2(nn.Module):
         )
         print("att1 ",o1.shape)
         o1, o2, o3 = (
-            self.cbam(o1),
-            self.cbam(o2),
-            self.cbam(o3),
+            self.cb(o1),
+            self.cb(o2),
+            self.cb(o3),
         )
         print("after ca ",o1.shape)
         o1, o2, o3 = (
-        self.cbam(o1),
-        self.cbam(o2),
-        self.cbam(o3),
+        self.cb(o1),
+        self.cb(o2),
+        self.cb(o3),
         )
         print("after sa ",o1.shape)
         o1, o2, o3 = (
