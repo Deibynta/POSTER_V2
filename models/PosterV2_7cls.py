@@ -327,7 +327,7 @@ class pyramid_trans_expr2(nn.Module):
         self.VIT = VisionTransformer(depth=2, embed_dim=embed_dim)
 
         self.ir_back = Backbone(50, 0.0, "ir")
-        self.ca = ChannelAttention(1024, 16)
+        self.ca = ChannelAttention(64, 16)
         self.sa = SpatialAttention()
         ir_checkpoint = torch.load(
             ir50_path,
