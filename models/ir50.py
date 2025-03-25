@@ -328,7 +328,7 @@ class ChannelAttention(Module):
         return self.sigmoid(out)'''
 
 class SpatialAttention(nn.Module):
-    def __init__(self,kernel=3):
+    def __init__(self,kernel=7):
         super().__init__()
         assert kernel in (3,7),"Kernel size must be in 3 or 7"
         padding = 1 if kernel == 3 else 3
@@ -340,6 +340,7 @@ class SpatialAttention(nn.Module):
         max_out = torch.max(x,dim=1,keepdim=True).values
         x = torch.cat([avg_out,max_out],dim=1)
         print("spatial",x.shape)
+        x = x.permute(0, 768, 64, 2)
         x = self.cnn(x)
         print("spatial",x.shape)
         return self.sigmoid(x)
