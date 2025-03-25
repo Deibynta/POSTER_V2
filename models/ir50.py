@@ -302,7 +302,7 @@ class Backbone(Module):
 
 class ChannelAttention(Module):
     def __init__(self, in_planes, ratio=16):
-        in_planes=64
+        in_planes=128
         print("CBAM")
         super(ChannelAttention, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
