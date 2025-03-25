@@ -413,6 +413,8 @@ class pyramid_trans_expr2(nn.Module):
         x_ir1, x_ir2, x_ir3 = self.ir_back(x)
 
         x_ir1, x_ir2, x_ir3 = self.conv1(x_ir1), self.conv2(x_ir2), self.conv3(x_ir3)
+        x_ir1, x_ir2, x_ir3 = self.ca(x_ir1), self.ca(x_ir2), self.ca(x_ir3)
+        x_ir1, x_ir2, x_ir3 = self.sa(x_ir1), self.sa(x_ir2), self.sa(x_ir3)
         x_window1, shortcut1 = self.window1(x_ir1)
         x_window2, shortcut2 = self.window2(x_ir2)
         x_window3, shortcut3 = self.window3(x_ir3)
