@@ -426,10 +426,10 @@ class pyramid_trans_expr2(nn.Module):
         
         o1, o2, o3 = (
             self.ca(o1),
-            print(o1.shape)
             self.ca(o2),
             self.ca(o3),
         )
+        print(o1.shape)
         o1, o2, o3 = (
         self.sa(o1),
         self.sa(o2),
