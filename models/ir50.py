@@ -302,7 +302,7 @@ class Backbone(Module):
 
 class ChannelAttention(Module):
     def __init__(self, in_planes, ratio=16):
-        in_planes=128
+        in_planes=64
         print("CBAM")
         super(ChannelAttention, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
@@ -335,7 +335,20 @@ class SpatialAttention(Module):
         x = torch.cat([avg_out, max_out], dim=1)
         x = self.conv1(x)
         return self.sigmoid(x)
-
+        
+class cbam(nn.Module):
+    def __init__(self,input_nc):
+        super().__init__()
+        self.ca = ChannelAttention(input_nc)
+        self.sa = SpatialAttention()
+        
+    def forward(self,x):
+        x = self.ca(x) * x
+        x = self.sa(x) * x
+        return x
+    
+    def get_spatial(self,x):
+        return self.sa(x)
 def load_pretrained_weights(model, checkpoint):
     import collections
     if 'state_dict' in checkpoint:
