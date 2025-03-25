@@ -332,7 +332,7 @@ class SpatialAttention(Module):
         super().__init__()
         assert kernel in (3,7),"Kernel size must be in 3 or 7"
         padding = 1 if kernel == 3 else 3
-        self.conv = nn.Conv2d(in_channels=2, out_channels=1, kernel_size=7, stride=1, padding=3, dilation=1, bias=self.bias)
+        self.conv = nn.Conv2d(in_channels=2, out_channels=1, kernel_size=7, stride=1, padding=3, dilation=1, bias=False)
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
         print("spatial",x.shape)
