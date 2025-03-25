@@ -311,18 +311,21 @@ class ChannelAttention(Module):
         self.sigmoid = nn.Sigmoid()
         
     def forward(self,x):
-        avg_x = self.share_mlp(self.avgpool(x))
-        max_x = self.share_mlp(self.maxpool(x))
-        return self.sigmoid(avg_x+max_x)
-
-    def forward(self, x):
         print("CBAM 1: ",x.shape)
-        avg_out = self.fc(self.avg_pool(x))
+        avg_x = self.share_mlp(self.avgpool(x))
         print("CBAM 2: ",x.shape)
-        max_out = self.fc(self.max_pool(x))
+        max_x = self.share_mlp(self.maxpool(x))
         print("CBAM 3: ",x.shape)
+        return self.sigmoid(avg_x+max_x)
+'''
+    def forward(self, x):
+        
+        avg_out = self.fc(self.avg_pool(x))
+        
+        max_out = self.fc(self.max_pool(x))
+        
         out = avg_out + max_out
-        return self.sigmoid(out)
+        return self.sigmoid(out)'''
 
 class SpatialAttention(Module):
     def __init__(self,kernel=7):
