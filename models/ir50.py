@@ -313,11 +313,11 @@ class ChannelAttention(Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        print(x.shape)
+        print("CBAM 1: ",x.shape)
         avg_out = self.fc(self.avg_pool(x))
-        print(x.shape)
+        print("CBAM 2: ",x.shape)
         max_out = self.fc(self.max_pool(x))
-        print(x.shape)
+        print("CBAM 3: ",x.shape)
         out = avg_out + max_out
         return self.sigmoid(out)
 
