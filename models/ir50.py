@@ -311,11 +311,10 @@ class ChannelAttention(Module):
         self.sigmoid = nn.Sigmoid()
         
     def forward(self,x):
-        print("CBAM 1: ",x.shape)
+        print("Channel Attention Input Shape: ",x.shape)
         avg_x = self.share_mlp(self.avgpool(x))
-        print("CBAM 2: ",x.shape)
         max_x = self.share_mlp(self.maxpool(x))
-        print("CBAM 3: ",x.shape)
+        print("Channel Attention Output Shape: ",x.shape)
         return self.sigmoid(avg_x+max_x)
 '''
     def forward(self, x):
@@ -335,18 +334,14 @@ class SpatialAttention(Module):
         self.cnn = nn.Conv2d(2,1,kernel_size=kernel,padding=padding,bias=False)
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
-        print("spatial",x.shape)
+        print("Spatial Attention Input Shape: ",x.shape)
         avg_out = torch.mean(x,dim=1,keepdim=True)
         max_out = torch.max(x,dim=1,keepdim=True).values
         x = torch.cat([avg_out,max_out],dim=1)
-        print("spatial",x.shape)
-        print("spatial",x.shape[0])
-        print("spatial",x.shape[1])
-        print("spatial",x.shape[2])
         x=torch.transpose(x, 0, 1)
         x = self.cnn(x)
         x=torch.transpose(x, 0, 1)
-        print("spatial",x.shape)
+        print("Spatial Attention Output Shape:",x.shape)
         return self.sigmoid(x)
         
 class cbam(Module):
