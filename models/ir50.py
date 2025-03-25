@@ -327,23 +327,22 @@ class ChannelAttention(Module):
         out = avg_out + max_out
         return self.sigmoid(out)'''
 
-class SpatialAttention(Module):
+class SpatialAttention(nn.Module):
     def __init__(self,kernel=7):
         super().__init__()
         assert kernel in (3,7),"Kernel size must be in 3 or 7"
         padding = 1 if kernel == 3 else 3
-        self.conv = nn.Conv2d(in_channels=2, out_channels=1, kernel_size=7, stride=1, padding=3, dilation=1, bias=False)
+        self.cnn = nn.Conv2d(2,1,kernel_size=kernel,padding=padding,bias=False)
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
         print("spatial",x.shape)
-        max = torch.max(x,1)[0].unsqueeze(1)
-        avg = torch.mean(x,1).unsqueeze(1)
-        concat = torch.cat((max,avg), dim=1)
+        avg_out = torch.mean(x,dim=1,keepdim=True)
+        max_out = torch.max(x,dim=1,keepdim=True).values
+        x = torch.cat([avg_out,max_out],dim=1)
         print("spatial",x.shape)
-        output = self.conv(concat)
-        output = F.sigmoid(output) * x 
+        x = self.cnn(x)
         print("spatial",x.shape)
-        return output
+        return self.sigmoid(x)
         
 class cbam(Module):
     def __init__(self,input_nc):
