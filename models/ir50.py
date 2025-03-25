@@ -338,7 +338,7 @@ class SpatialAttention(Module):
         print("spatial",x.shape)
         avg_out = torch.mean(x)
         max_out = torch.max(x).values
-        x = torch.cat([avg_out,max_out],dim=0)
+        x = torch.cat([avg_out,max_out])
         print("spatial",x.shape)
         x = self.cnn(x)
         print("spatial",x.shape)
