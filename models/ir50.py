@@ -332,17 +332,18 @@ class SpatialAttention(Module):
         super().__init__()
         assert kernel in (3,7),"Kernel size must be in 3 or 7"
         padding = 1 if kernel == 3 else 3
-        self.cnn = nn.Conv2d(2,1,kernel_size=kernel,padding=padding,bias=False)
+        self.conv = nn.Conv2d(in_channels=2, out_channels=1, kernel_size=7, stride=1, padding=3, dilation=1, bias=self.bias)
         self.sigmoid = nn.Sigmoid()
     def forward(self,x):
         print("spatial",x.shape)
-        avg_out = torch.mean(x)
-        max_out = torch.max(x).values
-        x = torch.cat([avg_out,max_out])
+        max = torch.max(x,1)[0].unsqueeze(1)
+        avg = torch.mean(x,1).unsqueeze(1)
+        concat = torch.cat((max,avg), dim=1)
         print("spatial",x.shape)
-        x = self.cnn(x)
+        output = self.conv(concat)
+        output = F.sigmoid(output) * x 
         print("spatial",x.shape)
-        return self.sigmoid(x)
+        return output
         
 class cbam(Module):
     def __init__(self,input_nc):
