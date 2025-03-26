@@ -309,9 +309,9 @@ class pyramid_trans_expr2(nn.Module):
             os.getcwd(), "models/pretrain/mobilefacenet_model_best.pth"
         )
         ir50_path = os.path.join(os.getcwd(), "models/pretrain/ir50.pth")'''
-        
-        mobilefacenet_path = "/content/drive/MyDrive/Poster_V2_and_CBAM_New_V1-main/mobilefacenet_model_best.pth"
-        ir50_path = "/content/drive/MyDrive/Poster_V2_and_CBAM_New_V1-main/ir50.pth"
+       
+        mobilefacenet_path = "/home/p24cs001/POSTER_V2-main/Dataset/mobilefacenet_model_best.pth"
+        ir50_path = "/home/p24cs001/POSTER_V2-main/Dataset/ir50.pth"
         print(mobilefacenet_path)
         face_landback_checkpoint = torch.load(
             mobilefacenet_path,
@@ -322,14 +322,16 @@ class pyramid_trans_expr2(nn.Module):
         checkpoint = torch.load(ir50_path, map_location=torch.device('cpu'))
         if "state_dict" in checkpoint:
              checkpoint = checkpoint["state_dict"]  # Extract actual state_dict
-            
+           
         for param in self.face_landback.parameters():
             param.requires_grad = False
 
         self.VIT = VisionTransformer(depth=2, embed_dim=embed_dim)
 
         self.ir_back = Backbone(50, 0.0, "ir")
-        self.cb = cbam(64)
+        self.cb1 = cbam(64)
+        self.cb2 = cbam(57)
+        self.cb3 = cbam(60)
         ir_checkpoint = torch.load(
             ir50_path,
             map_location=lambda storage, loc: storage,
@@ -425,16 +427,31 @@ class pyramid_trans_expr2(nn.Module):
             self.attn2(x_window2, q2),
             self.attn3(x_window3, q3),
         )
-        print("att1 ",o1.shape)
-        o1, o2, o3 = (
-            self.cb(o1),
-            self.cb(o2),
-            self.cb(o3),
-        )
-        spatial_mask_o1 = self.cb.get_spatial(o1)
-        spatial_mask_o2 = self.cb.get_spatial(o2)
-        spatial_mask_o3 = self.cb.get_spatial(o3)
-        print("after cbam ",o1.shape)
+        #print("att1 ",o1.shape[0])
+        #print("att1 ",o1.shape[1])
+        #print("att1 ",o1.shape[2])
+        if o1.shape[0]==64:
+            o1, o2, o3 = (
+                self.cb1(o1),
+                self.cb1(o2),
+                self.cb1(o3),
+            )
+        elif o1.shape[0]==57:
+                o1, o2, o3 = (
+                self.cb2(o1),
+                self.cb2(o2),
+                self.cb2(o3),
+            )
+        elif o1.shape[0]==60:
+                o1, o2, o3 = (
+                self.cb3(o1),
+                self.cb3(o2),
+                self.cb3(o3),
+            )
+        #spatial_mask_o1 = self.cb.get_spatial(o1)
+        #spatial_mask_o2 = self.cb.get_spatial(o2)
+        #spatial_mask_o3 = self.cb.get_spatial(o3)
+        #print("after cbam ",o1.shape)
         o1, o2, o3 = (
             self.ffn1(o1, shortcut1),
             self.ffn2(o2, shortcut2),
