@@ -310,8 +310,8 @@ class pyramid_trans_expr2(nn.Module):
         )
         ir50_path = os.path.join(os.getcwd(), "models/pretrain/ir50.pth")'''
        
-        mobilefacenet_path = "/home/p24cs001/POSTER_V2-main/Dataset/mobilefacenet_model_best.pth"
-        ir50_path = "/home/p24cs001/POSTER_V2-main/Dataset/ir50.pth"
+        mobilefacenet_path = "/content/drive/MyDrive/Poster_V2_and_CBAM_New_V1-main/mobilefacenet_model_best.pth"
+        ir50_path = "/content/drive/MyDrive/Poster_V2_and_CBAM_New_V1-main/ir50.pth"
         print(mobilefacenet_path)
         face_landback_checkpoint = torch.load(
             mobilefacenet_path,
